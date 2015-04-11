@@ -2,12 +2,13 @@
 # of containing the game logic directly.
 class window.App extends Backbone.Model
   initialize: ->
-    @set 'deck', deck = new Deck()
+    @set 'deck', deck = new Deck() #({length : 4})
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
     @set 'bank' , new Bank(100)
     @set 'winner' , null
     @set 'outcome' , null
+    @set 'preGame' , true
 
   redeal: ->
     @set 'playerHand', @get('deck').dealPlayer()
@@ -22,7 +23,7 @@ class window.App extends Backbone.Model
   setWinner: (winner) ->
       @set 'winner' , winner
       if winner is 'player'
-        if outcome is 'Black Jack!!'
+        if @get 'outcome' is 'Black Jack!!'
           @get('bank').payOut(true,true)
         else
           @get('bank').payOut(true,false)

@@ -2,9 +2,7 @@ class window.Hand extends Backbone.Collection
   model: Card
 
   initialize: (array, @deck, @isDealer) ->
-    # @set 'cards' , array
-    # @set 'deck' , @deck
-    # @set 'isDealer' , @isDealer
+
 
   hit: ->
     @add(@deck.pop())
@@ -14,6 +12,10 @@ class window.Hand extends Backbone.Collection
     if 21 in @scores()
       @trigger('blackJack',@)
       console.log('blackjack')
+
+  flipCardsForPreGame: ->
+    @at(0).flip()
+    @at(1).flip()
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1

@@ -1,17 +1,27 @@
 class window.AppView extends Backbone.View
   template: _.template '
     <button class="hit-button">Hit</button> <button class="stand-button">Stand</button>
+    <form>Bet Amount: <input id="betAmount" type="number" value="10"><br><button class="bet-button" type="button">Submit</button></form>
     <div class="player-hand-container"></div>
     <div class="dealer-hand-container"></div>
+    <div class="status-display">Game Status:</div>
     <div class="bank-container"></div>
   '
 
   events:
     'click .hit-button': ->
-      @model.get('playerHand').hit()
+      if not @model.get('preGame')
+        @model.get('playerHand').hit()
     'click .stand-button': ->
-      @model.get('dealerHand').playDealer()
-
+      if not @model.get('preGame')
+        @model.get('dealerHand').playDealer()
+    'click .bet-button': ->
+      if @model.get('preGame')
+        @model.get('bank').bet($("#betAmount").val())
+        @model.get('playerHand').flipCardsForPreGame()
+        @model.set('preGame',false)
+      # alert($("#betAmount").val())
+      @render()
 
   initialize: ->
     @render()
@@ -51,7 +61,9 @@ class window.AppView extends Backbone.View
       , @)
 
   announceGameStatus: ->
-    alert(@model.get('outcome'))
+    # alert(@model.get('outcome'))
+    # @model.get('outcome').el
+
 
   render: ->
     @$el.children().detach()
@@ -59,11 +71,16 @@ class window.AppView extends Backbone.View
     @$('.player-hand-container').html new HandView(collection: @model.get 'playerHand').el
     @$('.dealer-hand-container').html new HandView(collection: @model.get 'dealerHand').el
     @$('.bank-container').html new BankView(model: @model.get 'bank').el
+    @$('.status-display').html "Winner: #{@model.get 'outcome'}"
+
 
   startNewHand: ->
+    @render()
     @announceGameStatus()
     @model.setWinner(null)
+    @model.set('outcome',null)
+    @model.set('preGame',true)
     @model.redeal()
     @startHandListeners()
-    @render()
+    # @render()
 
