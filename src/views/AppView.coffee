@@ -1,11 +1,13 @@
 class window.AppView extends Backbone.View
   template: _.template '
+    <div class="play-area">
     <button class="hit-button">Hit</button> <button class="stand-button">Stand</button>
     <form>Bet Amount: <input id="betAmount" type="number" value="10"><br><button class="bet-button" type="button">Submit</button></form>
     <div class="player-hand-container"></div>
     <div class="dealer-hand-container"></div>
     <div class="status-display">Game Status:</div>
     <div class="bank-container"></div>
+    </div>
   '
 
   events:
@@ -71,7 +73,7 @@ class window.AppView extends Backbone.View
     @$('.player-hand-container').html new HandView(collection: @model.get 'playerHand').el
     @$('.dealer-hand-container').html new HandView(collection: @model.get 'dealerHand').el
     @$('.bank-container').html new BankView(model: @model.get 'bank').el
-    @$('.status-display').html "Winner: #{@model.get 'outcome'}"
+    @$('.status-display').html "Winner: #{@model.get 'winner'}"
 
 
   startNewHand: ->
